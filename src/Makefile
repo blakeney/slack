@@ -2,6 +2,8 @@
 # $FreeBSD: src/games/hack/Makefile,v 1.20.2.4 2002/08/07 16:31:41 ru Exp $
 # $DragonFly: src/games/hack/Makefile,v 1.6 2006/10/08 16:22:35 pavalos Exp $
 
+include Makefile.inc
+
 PROG=	hack
 SRCS=	alloc.c hack.Decl.c hack.apply.c hack.bones.c hack.c hack.cmd.c \
 	hack.do.c hack.do_name.c hack.do_wear.c hack.dog.c hack.eat.c \
