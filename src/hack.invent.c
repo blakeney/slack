@@ -781,11 +781,8 @@ merged(struct obj *otmp, struct obj *obj, bool lose)
 	if(obj->otyp == otmp->otyp &&
 	  obj->unpaid == otmp->unpaid &&
 	  obj->spe == otmp->spe &&
-	  obj->dknown == otmp->dknown &&
-	  obj->cursed == otmp->cursed &&
 	  (index("%*?!", obj->olet) ||
-	    (obj->known == otmp->known &&
-		(obj->olet == WEAPON_SYM && obj->otyp < BOOMERANG)))) {
+		(obj->olet == WEAPON_SYM && obj->otyp < BOOMERANG))) {
 		otmp->quan += obj->quan;
 		otmp->owt += obj->owt;
 		if(lose) freeobj(obj);

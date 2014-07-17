@@ -132,10 +132,6 @@ in_ice_box(struct obj *obj)
 		return(1);	/* be careful! */
 	}
 	if(obj == uwep) {
-		if(uwep->cursed) {
-			pline("Your weapon is welded to your hand!");
-			return(0);
-		}
 		setuwep(NULL);
 	}
 	current_ice_box->owt += obj->owt;
@@ -364,12 +360,6 @@ use_pick_axe(struct obj *obj)
 	int rx, ry, res = 0;
 
 	if(obj != uwep) {
-		if(uwep && uwep->cursed) {
-			/* Andreas Bormann - ihnp4!decvax!mcvax!unido!ab */
-			pline("Since your weapon is welded to your hand,");
-			pline("you cannot use that pick-axe.");
-			return(0);
-		}
 		pline("You now wield %s.", doname(obj));
 		setuwep(obj);
 		res = 1;

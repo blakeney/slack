@@ -3,6 +3,7 @@
 /* $FreeBSD: src/games/hack/hack.o_init.c,v 1.6 1999/11/16 10:26:37 marcel Exp $ */
 /* $DragonFly: src/games/hack/hack.o_init.c,v 1.4 2006/08/21 19:45:32 pavalos Exp $ */
 
+#include	<stdio.h>
 #include	"def.objects.h"
 #include	"hack.h"
 
@@ -37,8 +38,19 @@ init_objects(void)
 				&& objects[last].oc_name != NULL)
 			last++;
 		i = letindex(let);
-		if((!i && let != ILLOBJ_SYM) || bases[i] != 0)
-			error("initialization error");
+
+		/*
+		// For troubleshooting
+		printf("At index %d\n", i);
+		printf("At symbol %c\n", let);
+		printf("At name %s\n", objects[first].oc_name);
+		printf("Total # of objects: %d\n", end);
+		*/
+
+		if(!i && let != ILLOBJ_SYM)
+			error("initialization error: bad symbol");
+		if(bases[i] != 0)
+			error("initialization error: non-zero base");
 		bases[i] = first;
 
 		if(let == GEM_SYM)
@@ -54,8 +66,9 @@ init_objects(void)
 		if(sum != 100)
 			error("init-prob error for %c", let);
 
+		/*
 		if(objects[first].oc_descr != NULL && let != TOOL_SYM){
-			/* shuffle, also some additional descriptions */
+			// shuffle, also some additional descriptions
 			while(last < end && objects[last].oc_olet == let)
 				last++;
 			j = last;
@@ -66,6 +79,8 @@ init_objects(void)
 				objects[i].oc_descr = tmp;
 			}
 		}
+		*/
+
 		first = last;
 	}
 }
@@ -166,8 +181,6 @@ dodiscovered(void)			/* free after Robert Viduya */
 static bool
 interesting_to_discover(int i)
 {
-    return(
-	objects[i].oc_uname != NULL ||
-	 (objects[i].oc_name_known && objects[i].oc_descr != NULL)
-    );
+    return 1;
 }
+

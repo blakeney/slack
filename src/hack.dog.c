@@ -108,7 +108,7 @@ dogfood(struct obj *obj)
 			? POISON : CADAVER
 	    );
 	default:
-	    if(!obj->cursed) return(APPORT);
+	    return(APPORT);
 	    /* fall into next case */
 	case BALL_SYM:
 	case CHAIN_SYM:
@@ -303,18 +303,14 @@ int info[9];
 			if(rn2(10)) continue;
 		}
 
-		/* dog eschewes cursed objects */
-		/* but likes dog food */
+		/* dog likes dog food */
 		obj = fobj;
 		while(obj){
 		    if(obj->ox != nx || obj->oy != ny)
 			goto nextobj;
-		    if(obj->cursed) goto nxti;
 		    if(obj->olet == FOOD_SYM &&
 			(otyp = dogfood(obj)) < MANFOOD &&
 			(otyp < ACCFOOD || edog->hungrytime <= moves)){
-			/* Note: our dog likes the food so much that he
-			might eat it even when it conceals a cursed object */
 			nix = nx;
 			niy = ny;
 			chi = i;

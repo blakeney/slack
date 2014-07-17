@@ -6,8 +6,6 @@
 #include "hack.h"
 extern struct monst youmonst;
 
-static void	ghost_from_bottle(void);
-
 int
 dodrink(void)
 {
@@ -17,10 +15,6 @@ dodrink(void)
 
 	otmp = getobj("!", "drink");
 	if(!otmp) return(0);
-	if(!strcmp(objects[otmp->otyp].oc_descr, "smoky") && !rn2(13)) {
-		ghost_from_bottle();
-		goto use_it;
-	}
 	switch(otmp->otyp){
 	case POT_RESTORE_STRENGTH:
 		unkn++;
@@ -56,7 +50,6 @@ dodrink(void)
 		break;
 	case POT_FRUIT_JUICE:
 		pline("This tastes like fruit juice.");
-		lesshungry(20);
 		break;
 	case POT_HEALING:
 		pline("You begin to feel better.");
@@ -179,13 +172,6 @@ dodrink(void)
 	    unkn++;
 	    pline("You have a peculiar feeling for a moment, then it passes.");
 	}
-	if(otmp->dknown && !objects[otmp->otyp].oc_name_known) {
-		if(!unkn) {
-			objects[otmp->otyp].oc_name_known = 1;
-			more_experienced(0,10);
-		} else if(!objects[otmp->otyp].oc_uname)
-			docall(otmp);
-	}
 use_it:
 	useup(otmp);
 	return(1);
@@ -214,8 +200,6 @@ strange_feeling(struct obj *obj, const char *txt)
 	    pline("You have a strange feeling for a moment, then it passes.");
 	else
 	    pline(txt);
-	if(!objects[obj->otyp].oc_name_known && !objects[obj->otyp].oc_uname)
-		docall(obj);
 	useup(obj);
 }
 

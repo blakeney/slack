@@ -8,7 +8,6 @@ extern char quitchars[];
 
 static void	off_msg(struct obj *);
 static int	dorr(struct obj *);
-static bool	cursed(struct obj *);
 
 static void
 off_msg(struct obj *otmp)
@@ -32,10 +31,6 @@ doremarm(void)
 	if(!otmp) return(0);
 	if(!(otmp->owornmask & (W_ARMOR - W_ARM2))) {
 		pline("You can't take that off.");
-		return(0);
-	}
-	if( otmp == uarmg && uwep && uwep->cursed ) {	/* myers@uwmacc */
- pline("You seem not able to take off the gloves while holding your weapon.");
 		return(0);
 	}
 	armoroff(otmp);
@@ -78,28 +73,15 @@ doremring(void)
 static int
 dorr(struct obj *otmp)
 {
-	if(cursed(otmp)) return(0);
 	ringoff(otmp);
 	off_msg(otmp);
 	return(1);
 }
 
-static bool
-cursed(struct obj *otmp)
-{
-	if(otmp->cursed){
-		pline("You can't. It appears to be cursed.");
-		return(1);
-	}
-	return(0);
-}
-
-
 bool
 armoroff(struct obj *otmp)
 {
 int delay = -objects[otmp->otyp].oc_delay;
-	if(cursed(otmp)) return(0);
 	setworn(NULL, otmp->owornmask & W_ARMOR);
 	if(delay) {
 		nomul(delay);
@@ -149,10 +131,6 @@ doweararm(void)
 			pline("You are already wearing gloves.");
 			err++;
 		} else
-		if(uwep && uwep->cursed) {
-			pline("You cannot wear gloves over your weapon.");
-			err++;
-		} else
 			mask = W_ARMG;
 	} else {
 		if(uarm) {
@@ -163,10 +141,6 @@ doweararm(void)
 		}
 		if(!err) mask = W_ARM;
 	}
-	if(otmp == uwep && uwep->cursed) {
-		if(!err++)
-			pline("%s is welded to your hand.", Doname(uwep));
-	}
 	if(err) return(0);
 	setworn(otmp, mask);
 	if(otmp == uwep)
@@ -176,7 +150,6 @@ doweararm(void)
 		nomul(delay);
 		nomovemsg = "You finished your dressing manoeuvre.";
 	}
-	otmp->known = 1;
 	return(1);
 }
 
@@ -199,10 +172,6 @@ dowearring(void)
 	}
 	if(otmp == uleft || otmp == uright) {
 		pline("You are already wearing that.");
-		return(0);
-	}
-	if(otmp == uwep && uwep->cursed) {
-		pline("%s is welded to your hand.", Doname(uwep));
 		return(0);
 	}
 	if(uleft) mask = RIGHT_RING;

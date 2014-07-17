@@ -52,8 +52,7 @@ bhitm(struct monst *mtmp, struct obj *otmp)
 		}
 		break;
 	case WAN_POLYMORPH:
-		if( newcham(mtmp,&mons[rn2(CMNUM)]) )
-			objects[otmp->otyp].oc_name_known = 1;
+		newcham(mtmp,&mons[rn2(CMNUM)]);
 		break;
 	case WAN_CANCELLATION:
 		mtmp->mcan = 1;
@@ -100,7 +99,6 @@ bhito(struct obj *obj, struct obj *otmp)
 		break;
 	case WAN_CANCELLATION:
 		if(obj->spe && obj->olet != AMULET_SYM) {
-			obj->known = 0;
 			obj->spe = 0;
 		}
 		break;
@@ -257,10 +255,6 @@ dozap(void)
 			buzz((int) obj->otyp - WAN_MAGIC_MISSILE,
 				u.ux, u.uy, u.dx, u.dy);
 			break;
-		}
-		if(!objects[obj->otyp].oc_name_known) {
-			objects[obj->otyp].oc_name_known = 1;
-			more_experienced(0,10);
 		}
 	}
 	return(1);

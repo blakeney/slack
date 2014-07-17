@@ -17,9 +17,8 @@ struct obj {
 	char invlet;
 	Bitfield(oinvis,1);	/* not yet implemented */
 	Bitfield(odispl,1);
-	Bitfield(known,1);	/* exact nature known */
-	Bitfield(dknown,1);	/* color or text known */
-	Bitfield(cursed,1);
+	//Bitfield(known,1);	/* exact nature known */
+	//Bitfield(dknown,1);	/* color or text known */
 	Bitfield(unpaid,1);	/* on some bill */
 	Bitfield(rustfree,1);
 	Bitfield(onamelth,6);

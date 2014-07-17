@@ -128,7 +128,6 @@ domove(void)
 	/* attack monster */
 
 		nomul(0);
-		gethungry();
 		if(multi < 0) return;	/* we just fainted */
 
 		/* try to attack; note that it might evade */
@@ -442,8 +441,6 @@ pickup(int all)
 		addtobill(obj);       /* sets obj->unpaid if necessary */
 		{ int pickquan = obj->quan;
 		  int mergquan;
-		if(!Blind) obj->dknown = 1;	/* this is done by prinv(),
-				 but addinv() needs it already for merging */
 		obj = addinv(obj);    /* might merge it with other objects */
 		  mergquan = obj->quan;
 		  obj->quan = pickquan;	/* to fool prinv() */

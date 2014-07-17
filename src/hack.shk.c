@@ -129,7 +129,6 @@ static void		 pay(long, struct monst *);
 static int		 dopayobj(struct bill_x *);
 static struct obj	*bp_to_obj(struct bill_x *);
 static int		 getprice(struct obj *);
-static int		 realhunger(void);
 
 char *
 shkname(struct monst *mtmp)		/* called in do_name.c */
@@ -793,7 +792,7 @@ int tmp, ac;
 		tmp = 10*rnd(50);
 		break;
 	case FOOD_SYM:
-		tmp = 10*rnd(5 + (2000/realhunger()));
+		tmp = 10*rnd(20);
 		break;
 	case GEM_SYM:
 		tmp = 10*rnd(20);
@@ -821,19 +820,6 @@ int tmp, ac;
 		tmp = 10000;
 	}
 	return(tmp);
-}
-
-static int
-realhunger(void)	/* not completely foolproof */
-{
-int tmp = u.uhunger;
-struct obj *otmp = invent;
-	while(otmp){
-		if(otmp->olet == FOOD_SYM && !otmp->unpaid)
-			tmp += objects[otmp->otyp].nutrition;
-		otmp = otmp->nobj;
-	}
-	return((tmp <= 0) ? 1 : tmp);
 }
 
 bool

@@ -8,35 +8,7 @@ char POISONOUS[] = "ADKSVabhks";
 
 static bool	opentin(void);
 static void	Meatdone(void);
-static void	unfaint(void);
-static void	newuhs(bool);
 static int	eatcorpse(struct obj *);
-
-/* hunger texts used on bottom line (each 8 chars long) */
-#define	SATIATED	0
-#define NOT_HUNGRY	1
-#define	HUNGRY		2
-#define	WEAK		3
-#define	FAINTING	4
-#define FAINTED		5
-#define STARVED		6
-
-const char *hu_stat[] = {
-	"Satiated",
-	"        ",
-	"Hungry  ",
-	"Weak    ",
-	"Fainting",
-	"Fainted ",
-	"Starved "
-};
-
-void
-init_uhunger(void)
-{
-	u.uhunger = 900;
-	u.uhs = NOT_HUNGRY;
-}
 
 #define	TTSZ	SIZE(tintxts)
 struct { const char *txt; int nut; } tintxts[] = {
@@ -72,14 +44,12 @@ opentin(void)
 	r = rn2(2*TTSZ);
 	if(r < TTSZ){
 	    pline(tintxts[r].txt);
-	    lesshungry(tintxts[r].nut);
 	    if(r == 1)	/* SALMON */ {
 		Glib = rnd(15);
 		pline("Eating salmon made your fingers very slippery.");
 	    }
 	} else {
 	    pline("It contains spinach - this makes you feel like Popeye!");
-	    lesshungry(600);
 	    if(u.ustr < 118)
 		u.ustr += rnd( ((u.ustr < 17) ? 19 : 118) - u.ustr);
 	    if(u.ustr > u.ustrmax) u.ustrmax = u.ustr;
@@ -186,25 +156,10 @@ gotit:
 			nomul(-rnd(10));
 			nomovemsg = "You are conscious again.";
 		}
-		lesshungry(ftmp->nutrition / 4);
 	} else {
-		if(u.uhunger >= 1500) {
-			pline("You choke over your food.");
-			pline("You die...");
-			killer = ftmp->oc_name;
-			done("choked");
-		}
 		switch(otmp->otyp){
 		case FOOD_RATION:
-			if(u.uhunger <= 200)
-				pline("That food really hit the spot!");
-			else if(u.uhunger <= 700)
-				pline("That satiated your stomach!");
-			else {
-	pline("You're having a hard time getting all that food down.");
-				multi -= 2;
-			}
-			lesshungry(ftmp->nutrition);
+			pline("That food really hit the spot!");
 			if(multi < 0) nomovemsg = "You finished your meal.";
 			break;
 		case TRIPE_RATION:
@@ -213,19 +168,17 @@ gotit:
 			flags.botl = 1;
 			if(rn2(2)){
 				pline("You vomit.");
-				morehungry(20);
 				if(Sick) {
 					Sick = 0;	/* David Neves */
 					pline("What a relief!");
 				}
-			} else	lesshungry(ftmp->nutrition);
+			}
 			break;
 		default:
 			if(otmp->otyp >= CORPSE)
 			pline("That %s tasted terrible!",ftmp->oc_name);
 			else
 			pline("That %s was delicious!",ftmp->oc_name);
-			lesshungry(ftmp->nutrition);
 			if(otmp->otyp == DEAD_LIZARD && (Confusion > 2))
 				Confusion = 2;
 			else
@@ -266,107 +219,6 @@ eatx:
 	}
 	useup(otmp);
 	return(1);
-}
-
-/* called in hack.main.c */
-void
-gethungry(void)
-{
-	--u.uhunger;
-	if(moves % 2) {
-		if(Regeneration) u.uhunger--;
-		if(Hunger) u.uhunger--;
-		/* a3:  if(Hunger & LEFT_RING) u.uhunger--;
-			if(Hunger & RIGHT_RING) u.uhunger--;
-		   etc. */
-	}
-	if(moves % 20 == 0) {			/* jimt@asgb */
-		if(uleft) u.uhunger--;
-		if(uright) u.uhunger--;
-	}
-	newuhs(TRUE);
-}
-
-/* called after vomiting and after performing feats of magic */
-void
-morehungry(int num)
-{
-	u.uhunger -= num;
-	newuhs(TRUE);
-}
-
-/* called after eating something (and after drinking fruit juice) */
-void
-lesshungry(int num)
-{
-	u.uhunger += num;
-	newuhs(FALSE);
-}
-
-static void
-unfaint(void)
-{
-	u.uhs = FAINTING;
-	flags.botl = 1;
-}
-
-static void
-newuhs(bool incr)
-{
-	int newhs, h = u.uhunger;
-
-	newhs = (h > 1000) ? SATIATED :
-		(h > 150) ? NOT_HUNGRY :
-		(h > 50) ? HUNGRY :
-		(h > 0) ? WEAK : FAINTING;
-
-	if(newhs == FAINTING) {
-		if(u.uhs == FAINTED)
-			newhs = FAINTED;
-		if(u.uhs <= WEAK || rn2(20-u.uhunger/10) >= 19) {
-			if(u.uhs != FAINTED && multi >= 0 /* %% */) {
-				pline("You faint from lack of food.");
-				nomul(-10+(u.uhunger/10));
-				nomovemsg = "You regain consciousness.";
-				afternmv = unfaint;
-				newhs = FAINTED;
-			}
-		} else
-		if(u.uhunger < -(int)(200 + 25*u.ulevel)) {
-			u.uhs = STARVED;
-			flags.botl = 1;
-			bot();
-			pline("You die from starvation.");
-			done("starved");
-		}
-	}
-
-	if(newhs != u.uhs) {
-		if(newhs >= WEAK && u.uhs < WEAK)
-			losestr(1);	/* this may kill you -- see below */
-		else
-		if(newhs < WEAK && u.uhs >= WEAK && u.ustr < u.ustrmax)
-			losestr(-1);
-		switch(newhs){
-		case HUNGRY:
-			pline((!incr) ? "You only feel hungry now." :
-			      (u.uhunger < 145) ? "You feel hungry." :
-				"You are beginning to feel hungry.");
-			break;
-		case WEAK:
-			pline((!incr) ? "You feel weak now." :
-			      (u.uhunger < 45) ? "You feel weak." :
-				"You are beginning to feel weak.");
-			break;
-		}
-		u.uhs = newhs;
-		flags.botl = 1;
-		if(u.uhp < 1) {
-			pline("You die from hunger and exhaustion.");
-			killer = "exhaustion";
-			done("starved");
-		}
-	}
 }
 
 #define	CORPSE_I_TO_C(otyp)	(char) ((otyp >= DEAD_ACID_BLOB)\

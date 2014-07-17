@@ -156,22 +156,11 @@ struct obj *otmp;
 	} else {
 		/* first wield otmp */
 		if(otmp != uwep) {
-			if(uwep && uwep->cursed) {
-			    /* Andreas Bormann */
-			    pline("Since your weapon is welded to your hand,");
-			    pline("you use the %s.", aobjnam(uwep, NULL));
-			    otmp = uwep;
-			} else {
-			    if(!otmp)
-				pline("You are now empty-handed.");
-			    else if(otmp->cursed)
-				pline("The %s %s to your hand!",
-				    aobjnam(otmp, "weld"),
-				    (otmp->quan == 1) ? "itself" : "themselves");
-			    else
-				pline("You now wield %s.", doname(otmp));
-			    setuwep(otmp);
-			}
+			if(!otmp)
+			pline("You are now empty-handed.");
+			else
+			pline("You now wield %s.", doname(otmp));
+			setuwep(otmp);
 		}
 
 		if(!otmp)

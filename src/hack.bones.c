@@ -30,7 +30,6 @@ struct monst *mtmp;
 		otmp->oy = u.uy;
 		otmp->age = 0;		/* very long ago */
 		otmp->owornmask = 0;
-		if(rn2(5)) otmp->cursed = 1;
 		if(!otmp->nobj){
 			otmp->nobj = fobj;
 			fobj = invent;
@@ -60,11 +59,9 @@ struct monst *mtmp;
 		otmp->o_id = 0;
 	     /* otmp->o_cnt_id = 0; - superfluous */
 		otmp->onamelth = 0;
-		otmp->known = 0;
 		otmp->invlet = 0;
 		if(otmp->olet == AMULET_SYM && !otmp->spe) {
 			otmp->spe = -1;      /* no longer the actual amulet */
-			otmp->cursed = 1;    /* flag as gotten from a ghost */
 		}
 	}
 	if((fd = creat(bones, FMASK)) < 0) return;

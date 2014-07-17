@@ -41,10 +41,6 @@ drop(struct obj *obj)
 		return(0);
 	}
 	if(obj == uwep) {
-		if(uwep->cursed) {
-			pline("Your weapon is welded to your hand!");
-			return(0);
-		}
 		setuwep(NULL);
 	}
 	pline("You dropped %s.", doname(obj));
@@ -272,10 +268,6 @@ dothrow(void)
 	u_wipe_engr(2);
 
 	if(obj == uwep){
-		if(obj->cursed){
-			pline("Your weapon is welded to your hand.");
-			return(1);
-		}
 		if(obj->quan > 1)
 			setuwep(splitobj(obj, 1));
 		else
@@ -380,7 +372,6 @@ dothrow(void)
 				if(tamedog(mon,obj)) return(1);
 			if(obj->olet == GEM_SYM && mon->data->mlet == 'u' &&
 				!mon->mtame){
-			 if(obj->dknown && objects[obj->otyp].oc_name_known){
 			  if(objects[obj->otyp].g_val > 0){
 			    u.uluck += 5;
 			    goto valuable;
@@ -388,8 +379,6 @@ dothrow(void)
 			    pline("%s is not interested in your junk.",
 				Monnam(mon));
 			  }
-			 } else { /* value unknown to @ */
-			    u.uluck++;
 			valuable:
 			    if(u.uluck > LUCKMAX)	/* dan@ut-ngp */
 				u.uluck = LUCKMAX;
@@ -398,7 +387,6 @@ dothrow(void)
 			    mpickobj(mon, obj);
 			    rloc(mon);
 			    return(1);
-			 }
 			}
 		}
 	}

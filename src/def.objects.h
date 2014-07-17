@@ -9,12 +9,12 @@
 
 struct objclass objects[] = {
 
-	{ "strange object", NULL, NULL, 1, 0,
+	{ "strange object", NULL, 0,
 		ILLOBJ_SYM, 0, 0, 0, 0, 0, 0 },
-	{ "amulet of Yendor", NULL, NULL, 1, 0,
+	{ "amulet of Yendor", NULL, 0,
 		AMULET_SYM, 100, 0, 2, 0, 0, 0 },
 
-#define	FOOD(name,prob,delay,weight,nutrition)	{ name, NULL, NULL, 1, 1,\
+#define	FOOD(name,prob,delay,weight,nutrition)	{ name, NULL, 1,\
 		FOOD_SYM, prob, delay, weight, 0, 0, nutrition }
 
 /* dog eats foods 0-4 but prefers 1 above 0,2,3,4 */
@@ -99,7 +99,7 @@ struct objclass objects[] = {
 /* weapons ... - (ROCK-1) are shot using idem+(BOW-ARROW) */
 /* weapons AXE, SWORD, THSWORD are good for worm-cutting */
 /* weapons (PICK-)AXE, DAGGER, CRYSKNIFE are good for tin-opening */
-#define WEAPON(name,prob,wt,ldam,sdam)	{ name, NULL, NULL, 1, 0 /*%%*/,\
+#define WEAPON(name,prob,wt,ldam,sdam)	{ name, NULL, 0 /*%%*/,\
 		WEAPON_SYM, prob, 0, wt, ldam, sdam, 0 }
 
 	WEAPON("arrow",		7, 0, 6, 6),
@@ -121,26 +121,26 @@ struct objclass objects[] = {
 	WEAPON("sling",		5, 3, 6, 6),
 	WEAPON("crossbow",	6, 3, 4, 6),
 
-	{ "whistle", "whistle", NULL, 0, 0,
+	{ "whistle", NULL, 0,
 		TOOL_SYM, 90, 0, 2, 0, 0, 0 },
-	{ "magic whistle", "whistle", NULL, 0, 0,
+	{ "magic whistle", NULL, 0,
 		TOOL_SYM, 10, 0, 2, 0, 0, 0 },
-	{ "expensive camera", NULL, NULL, 1, 1,
+	{ "expensive camera", NULL, 1,
 		TOOL_SYM, 0, 0, 3, 0, 0, 0 },
-	{ "ice box", "large box", NULL, 0, 0,
+	{ "ice box", NULL, 0,
 		TOOL_SYM, 0, 0, 40, 0, 0, 0 },
-	{ "pick-axe", NULL, NULL, 1, 1,
+	{ "pick-axe", NULL, 1,
 		TOOL_SYM, 0, 0, 5, 6, 3, 0 },
-	{ "can opener", NULL, NULL, 1, 1,
+	{ "can opener", NULL, 1,
 		TOOL_SYM, 0, 0, 1, 0, 0, 0 },
-	{ "heavy iron ball", NULL, NULL, 1, 0,
+	{ "heavy iron ball", NULL, 0,
 		BALL_SYM, 100, 0, 20, 0, 0, 0 },
-	{ "iron chain", NULL, NULL, 1, 0,
+	{ "iron chain", NULL, 0,
 		CHAIN_SYM, 100, 0, 20, 0, 0, 0 },
-	{ "enormous rock", NULL, NULL, 1, 0,
+	{ "enormous rock", NULL, 0,
 		ROCK_SYM, 100, 0, 200 /* > MAX_CARR_CAP */, 0, 0, 0 },
 
-#define ARMOR(name,prob,delay,ac,can)	{ name, NULL, NULL, 1, 0,\
+#define ARMOR(name,prob,delay,ac,can)	{ name, NULL, 0,\
 		ARMOR_SYM, prob, delay, 8, ac, can, 0 }
 	ARMOR("helmet",		 3, 1, 9, 0),
 	ARMOR("plate mail",		 5, 5, 3, 2),
@@ -156,7 +156,7 @@ struct objclass objects[] = {
 	ARMOR("shield",		 3, 0, 9, 0),
 	ARMOR("pair of gloves",	 1, 1, 9, 0),
 
-#define POTION(name,color)	{ name, color, NULL, 0, 1,\
+#define POTION(name,color)	{ name, NULL, 1,\
 		POTION_SYM, 0, 0, 2, 0, 0, 0 }
 
 	POTION("restore strength",	"orange"),
@@ -175,40 +175,44 @@ struct objclass objects[] = {
 	POTION("gain level",	"emerald"),
 	POTION("extra healing",	"sky blue"),
 	POTION("levitation",	"brown"),
+	/*
 	POTION(NULL,	"brilliant blue"),
 	POTION(NULL,	"clear"),
 	POTION(NULL,	"magenta"),
 	POTION(NULL,	"ebony"),
+	*/
 
-#define SCROLL(name,text,prob) { name, text, NULL, 0, 1,\
+#define SCROLL(name,text,prob) { name, NULL, 1,\
 		SCROLL_SYM, prob, 0, 3, 0, 0, 0 }
 	SCROLL("mail",	"KIRJE", 0),
-	SCROLL("enchant armor", "ZELGO MER", 6),
-	SCROLL("destroy armor", "JUYED AWK YACC", 5),
+	SCROLL("enchant armor", "ZELGO MER", 11/*6*/),
+	SCROLL("destroy armor", "JUYED AWK YACC", 0/*5*/), // Not needed or wanted due to game mods
 	SCROLL("confuse monster", "NR 9", 5),
 	SCROLL("scare monster", "XIXAXA XOXAXA XUXAXA", 4),
 	SCROLL("blank paper", "READ ME", 3),
-	SCROLL("remove curse", "PRATYAVAYAH", 6),
-	SCROLL("enchant weapon", "DAIYEN FOOELS", 6),
-	SCROLL("damage weapon", "HACKEM MUCHE", 5),
-	SCROLL("create monster", "LEP GEX VEN ZEA", 5),
-	SCROLL("taming", "PRIRUTSENIE", 1),
+	SCROLL("remove curse", "PRATYAVAYAH", 0/*6*/), // Not needed due to game mods
+	SCROLL("enchant weapon", "DAIYEN FOOELS", 15/*6*/),
+	SCROLL("damage weapon", "HACKEM MUCHE", 0/*5*/), // Not needed or wanted due to game mods
+	SCROLL("create monster", "LEP GEX VEN ZEA", 10/*5*/),
+	SCROLL("taming", "PRIRUTSENIE", 10/*1*/),
 	SCROLL("genocide", "ELBIB YLOH",2),
 	SCROLL("light", "VERR YED HORRE", 10),
-	SCROLL("teleportation", "VENZAR BORGAVVE", 5),
+	SCROLL("teleportation", "VENZAR BORGAVVE", 14/*5*/),
 	SCROLL("gold detection", "THARR", 4),
 	SCROLL("food detection", "YUM YUM", 1),
-	SCROLL("identify", "KERNOD WEL", 18),
-	SCROLL("magic mapping", "ELAM EBOW", 5),
-	SCROLL("amnesia", "DUAM XNAHT", 3),
+	SCROLL("identify", "KERNOD WEL", 0/*18*/), // Not needed due to game mods
+	SCROLL("magic mapping", "ELAM EBOW", 6/*5*/),
+	SCROLL("amnesia", "DUAM XNAHT", 0/*3*/), // Do not want
 	SCROLL("fire", "ANDOVA BEGARIN", 5),
-	SCROLL("punishment", "VE FORBRYDERNE", 1),
+	SCROLL("punishment", "VE FORBRYDERNE", 0), // Do not want
+	/*
 	SCROLL(NULL, "VELOX NEB", 0),
 	SCROLL(NULL, "FOOBIE BLETCH", 0),
 	SCROLL(NULL, "TEMOV", 0),
 	SCROLL(NULL, "GARVEN DEH", 0),
+	*/
 
-#define	WAND(name,metal,prob,flags)	{ name, metal, NULL, 0, 0,\
+#define	WAND(name,metal,prob,flags)	{ name, NULL, 0,\
 		WAND_SYM, prob, 0, 3, flags, 0, 0 }
 
 	WAND("light",	"iridium",		10,	NODIR),
@@ -229,11 +233,13 @@ struct objclass objects[] = {
 	WAND("sleep",	"curved",	5,	RAY),
 	WAND("cold",	"short",	5,	RAY),
 	WAND("death",	"long",		1,	RAY),
+	/*
 	WAND(NULL,	"oak",		0,	0),
 	WAND(NULL,	"ebony",	0,	0),
 	WAND(NULL,	"runed",	0,	0),
+	*/
 
-#define	RING(name,stone,spec)	{ name, stone, NULL, 0, 0,\
+#define	RING(name,stone,spec)	{ name, NULL, 0,\
 		RING_SYM, 0, 0, 1, spec, 0, 0 }
 
 	RING("adornment",	"engagement",	0),
@@ -255,11 +261,13 @@ struct objclass objects[] = {
 	RING("protection",	"granite",	SPEC),
 	RING("warning",		"wire",		0),
 	RING("teleport control", "iron",	0),
+	/*
 	RING(NULL,		"ivory",	0),
 	RING(NULL,		"blackened",	0),
+	*/
 
 /* gems ************************************************************/
-#define	GEM(name,color,prob,gval)	{ name, color, NULL, 0, 1,\
+#define	GEM(name,color,prob,gval)	{ name, NULL, 1,\
 		GEM_SYM, prob, 0, 1, 0, 0, gval }
 	GEM("diamond", "blue", 1, 4000),
 	GEM("ruby", "red", 1, 3500),
@@ -280,7 +288,7 @@ struct objclass objects[] = {
 	GEM("worthless piece of red glass", "red", 20, 0),
 	GEM("worthless piece of yellow glass", "yellow", 20, 0),
 	GEM("worthless piece of green glass", "green", 20, 0),
-	{ NULL, NULL, NULL, 0, 0, ILLOBJ_SYM, 0, 0, 0, 0, 0, 0 }
+	//{ NULL, NULL, 0, ILLOBJ_SYM, 0, 0, 0, 0, 0, 0 }
 };
 
 char obj_symbols[] = {

@@ -40,9 +40,7 @@ typename(int otyp)
 static char buf[BUFSZ];
 struct objclass *ocl = &objects[otyp];
 const char *an = ocl->oc_name;
-const char *dn = ocl->oc_descr;
 char *un = ocl->oc_uname;
-int nn = ocl->oc_name_known;
 	switch(ocl->oc_olet) {
 	case POTION_SYM:
 		Strcpy(buf, "potion");
@@ -57,56 +55,35 @@ int nn = ocl->oc_name_known;
 		Strcpy(buf, "ring");
 		break;
 	default:
-		if(nn) {
-			Strcpy(buf, an);
-			if(otyp >= TURQUOISE && otyp <= JADE)
-				Strcat(buf, " stone");
-			if(un)
-				Sprintf(eos(buf), " called %s", un);
-			if(dn)
-				Sprintf(eos(buf), " (%s)", dn);
-		} else {
-			Strcpy(buf, dn ? dn : an);
-			if(ocl->oc_olet == GEM_SYM)
-				Strcat(buf, " gem");
-			if(un)
-				Sprintf(eos(buf), " called %s", un);
-		}
+		Strcpy(buf, an);
+		if(otyp >= TURQUOISE && otyp <= JADE)
+			Strcat(buf, " stone");
+		if(un)
+			Sprintf(eos(buf), " called %s", un);
 		return(buf);
 	}
 	/* here for ring/scroll/potion/wand */
-	if(nn)
-		Sprintf(eos(buf), " of %s", an);
 	if(un)
 		Sprintf(eos(buf), " called %s", un);
-	if(dn)
-		Sprintf(eos(buf), " (%s)", dn);
 	return(buf);
 }
 
 char *
 xname(struct obj *obj)
 {
-static char bufr[BUFSZ];
-char *buf = &(bufr[PREFIX]);	/* leave room for "17 -3 " */
-int nn = objects[obj->otyp].oc_name_known;
-const char *an = objects[obj->otyp].oc_name;
-const char *dn = objects[obj->otyp].oc_descr;
-char *un = objects[obj->otyp].oc_uname;
-int pl = (obj->quan != 1);
-	if(!obj->dknown && !Blind) obj->dknown = 1; /* %% doesnt belong here */
+	static char bufr[BUFSZ];
+	char *buf = &(bufr[PREFIX]);	/* leave room for "17 -3 " */
+	const char *an = objects[obj->otyp].oc_name;
+	char *un = objects[obj->otyp].oc_uname;
+	int pl = (obj->quan != 1);
 	switch(obj->olet) {
 	case AMULET_SYM:
-		Strcpy(buf, (obj->spe < 0 && obj->known)
+		Strcpy(buf, (obj->spe < 0)
 			? "cheap plastic imitation of the " : "");
 		Strcat(buf,"Amulet of Yendor");
 		break;
 	case TOOL_SYM:
-		if(!nn) {
-			Strcpy(buf, dn);
-			break;
-		}
-		Strcpy(buf,an);
+		Strcpy(buf, an);
 		break;
 	case FOOD_SYM:
 		if(obj->otyp == DEAD_HOMUNCULUS && pl) {
@@ -138,23 +115,17 @@ int pl = (obj->quan != 1);
 		  (obj->owt > objects[obj->otyp].oc_weight) ? "very " : "");
 		break;
 	case POTION_SYM:
-		if(nn || un || !obj->dknown) {
+		if(un) {
 			Strcpy(buf, "potion");
 			if(pl) {
 				pl = 0;
 				Strcat(buf, "s");
 			}
-			if(!obj->dknown) break;
-			if(un) {
-				Strcat(buf, " called ");
-				Strcat(buf, un);
-			} else {
-				Strcat(buf, " of ");
-				Strcat(buf, an);
-			}
+			Strcat(buf, " called ");
+			Strcat(buf, un);
 		} else {
-			Strcpy(buf, dn);
-			Strcat(buf, " potion");
+			Strcpy(buf, "potion of ");
+			Strcat(buf, an);
 		}
 		break;
 	case SCROLL_SYM:
@@ -163,47 +134,16 @@ int pl = (obj->quan != 1);
 			pl = 0;
 			Strcat(buf, "s");
 		}
-		if(!obj->dknown) break;
-		if(nn) {
-			Strcat(buf, " of ");
-			Strcat(buf, an);
-		} else if(un) {
-			Strcat(buf, " called ");
-			Strcat(buf, un);
-		} else {
-			Strcat(buf, " labeled ");
-			Strcat(buf, dn);
-		}
+		Strcat(buf, " of ");
+		Strcat(buf, an);
 		break;
 	case WAND_SYM:
-		if(!obj->dknown)
-			Sprintf(buf, "wand");
-		else if(nn)
-			Sprintf(buf, "wand of %s", an);
-		else if(un)
-			Sprintf(buf, "wand called %s", un);
-		else
-			Sprintf(buf, "%s wand", dn);
+		Sprintf(buf, "wand of %s", an);
 		break;
 	case RING_SYM:
-		if(!obj->dknown)
-			Sprintf(buf, "ring");
-		else if(nn)
-			Sprintf(buf, "ring of %s", an);
-		else if(un)
-			Sprintf(buf, "ring called %s", un);
-		else
-			Sprintf(buf, "%s ring", dn);
+		Sprintf(buf, "ring of %s", an);
 		break;
 	case GEM_SYM:
-		if(!obj->dknown) {
-			Strcpy(buf, "gem");
-			break;
-		}
-		if(!nn) {
-			Sprintf(buf, "%s gem", dn);
-			break;
-		}
 		Strcpy(buf, an);
 		if(obj->otyp >= TURQUOISE && obj->otyp <= JADE)
 			Strcat(buf, " stone");
@@ -246,8 +186,8 @@ nopl:
 char *
 doname(struct obj *obj)
 {
-char prefix[PREFIX];
-char *bp = xname(obj);
+	char prefix[PREFIX];
+	char *bp = xname(obj);
 	if(obj->quan != 1)
 		Sprintf(prefix, "%u ", obj->quan);
 	else
@@ -262,19 +202,15 @@ char *bp = xname(obj);
 			Strcat(bp, " (being worn)");
 		/* fall into next case */
 	case WEAPON_SYM:
-		if(obj->known) {
-			Strcat(prefix, sitoa(obj->spe));
-			Strcat(prefix, " ");
-		}
+		Strcat(prefix, sitoa(obj->spe));
+		Strcat(prefix, " ");
 		break;
 	case WAND_SYM:
-		if(obj->known)
-			Sprintf(eos(bp), " (%d)", obj->spe);
-		break;
+		Sprintf(eos(bp), " (%d)", obj->spe);
 	case RING_SYM:
 		if(obj->owornmask & W_RINGR) Strcat(bp, " (on right hand)");
 		if(obj->owornmask & W_RINGL) Strcat(bp, " (on left hand)");
-		if(obj->known && (objects[obj->otyp].bits & SPEC)) {
+		if((objects[obj->otyp].bits & SPEC)) {
 			Strcat(prefix, sitoa(obj->spe));
 			Strcat(prefix, " ");
 		}
@@ -501,8 +437,6 @@ srch:
 		if(!zn) goto nxti;
 		if(an && strcmp(an, zn))
 			goto nxti;
-		if(dn && (!(zn = objects[i].oc_descr) || strcmp(dn, zn)))
-			goto nxti;
 		if(un && (!(zn = objects[i].oc_uname) || strcmp(un, zn)))
 			goto nxti;
 		typ = i;
@@ -538,9 +472,6 @@ typfnd:
 	else if(typ == WAN_WISHING && rn2(10))
 		spe = (rn2(10) ? -1 : 0);
 	otmp->spe = spe;
-
-	if(spesgn == -1)
-		otmp->cursed = 1;
 
 	return(otmp);
     }

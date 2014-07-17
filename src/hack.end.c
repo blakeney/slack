@@ -174,7 +174,6 @@ done(const char *st1)
 		    u.urexp);
 		for(otmp = invent; otmp; otmp = otmp->nobj) {
 			if(otmp->olet == GEM_SYM){
-				objects[otmp->otyp].oc_name_known = 1;
 				i = otmp->quan*objects[otmp->otyp].g_val;
 				if(i == 0) {
 					worthlessct += otmp->quan;
@@ -185,7 +184,6 @@ done(const char *st1)
 				  printf("\t%s (worth %d Zorkmids),\n",
 				    doname(otmp), i);
 			} else if(otmp->olet == AMULET_SYM) {
-				otmp->known = 1;
 				i = (otmp->spe < 0) ? 2 : 5000;
 				u.urexp += i;
 				if(!done_stopprint)

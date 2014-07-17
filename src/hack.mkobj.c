@@ -58,13 +58,11 @@ mksobj(int otyp)
 	otmp->quan = 1;
 	otmp->olet = let;
 	otmp->otyp = otyp;
-	otmp->dknown = index("/=!?*", let) ? 0 : 1;
 	switch(let) {
 	case WEAPON_SYM:
 		otmp->quan = (otmp->otyp <= ROCK) ? rn1(6,6) : 1;
 		if(!rn2(11)) otmp->spe = rnd(3);
 		else if(!rn2(10)) {
-			otmp->cursed = 1;
 			otmp->spe = -rnd(3);
 		}
 		break;
@@ -87,11 +85,9 @@ mksobj(int otyp)
 	case AMULET_SYM:
 		break;
 	case ARMOR_SYM:
-		if(!rn2(8)) otmp->cursed = 1;
 		if(!rn2(10)) otmp->spe = rnd(3);
 		else if(!rn2(9)) {
 			otmp->spe = -rnd(3);
-			otmp->cursed = 1;
 		}
 		break;
 	case WAND_SYM:
@@ -102,13 +98,9 @@ mksobj(int otyp)
 	case RING_SYM:
 		if(objects[otmp->otyp].bits & SPEC) {
 			if(!rn2(3)) {
-				otmp->cursed = 1;
 				otmp->spe = -rnd(2);
 			} else otmp->spe = rnd(2);
-		} else if(otmp->otyp == RIN_TELEPORTATION ||
-			  otmp->otyp == RIN_AGGRAVATE_MONSTER ||
-			  otmp->otyp == RIN_HUNGER || !rn2(9))
-			otmp->cursed = 1;
+		} 
 		break;
 	default:
 		panic("impossible mkobj");

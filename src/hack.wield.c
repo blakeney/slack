@@ -22,9 +22,6 @@ dowield(void)
 	if(!(wep = getobj("#-)", "wield"))) /* nothing */;
 	else if(uwep == wep)
 		pline("You are already wielding that!");
-	else if(uwep && uwep->cursed)
-		pline("The %s welded to your hand!",
-			aobjnam(uwep, "are"));
 	else if(wep == &zeroobj) {
 		if(uwep == 0){
 			pline("You are already empty handed.");
@@ -40,11 +37,7 @@ dowield(void)
 	else {
 		setuwep(wep);
 		res++;
-		if(uwep->cursed)
-		    pline("The %s %s to your hand!",
-			aobjnam(uwep, "weld"),
-			(uwep->quan == 1) ? "itself" : "themselves"); /* a3 */
-		else prinv(uwep);
+		prinv(uwep);
 	}
 	return(res);
 }
@@ -77,7 +70,6 @@ chwepon(struct obj *otmp, int amount)
 	if(uwep->otyp == WORM_TOOTH && amount > 0) {
 		uwep->otyp = CRYSKNIFE;
 		pline("Your weapon seems sharper now.");
-		uwep->cursed = 0;
 		return(1);
 	}
 
@@ -101,6 +93,5 @@ chwepon(struct obj *otmp, int amount)
 	pline("Your %s %s for a %s.",
 		aobjnam(uwep, "glow"), color, ltime);
 	uwep->spe += amount;
-	if(amount > 0) uwep->cursed = 0;
 	return(1);
 }

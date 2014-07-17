@@ -183,7 +183,6 @@ got_suffix:
 	u = zerou;
 	u.usym = '@';
 	u.ulevel = 1;
-	init_uhunger();
 #ifdef QUEST
 	u.uhorizon = 6;
 #endif /* QUEST */
@@ -262,9 +261,6 @@ ini_inv(struct trobj *trop)
 struct obj *obj;
 	while(trop->trolet) {
 		obj = mkobj(trop->trolet);
-		obj->known = trop->trknown;
-		/* not obj->dknown = 1; - let him look at it at least once */
-		obj->cursed = 0;
 		if(obj->olet == WEAPON_SYM){
 			obj->quan = trop->trquan;
 			trop->trquan = 1;

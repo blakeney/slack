@@ -643,7 +643,6 @@ int i;
 #else
 	sprintf(eos(newbot), "   Exp %2u  ", u.ulevel);
 #endif /* EXP_ON_BOTL */
-	strcat(newbot, hu_stat[u.uhs]);
 	if(flags.time)
 	    sprintf(eos(newbot), "  %ld", moves);
 	if(strlen(newbot) >= COLNO) {

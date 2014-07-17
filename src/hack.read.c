@@ -16,7 +16,7 @@ doread(void)
 
 	scroll = getobj("?", "read");
 	if(!scroll) return(0);
-	if(!scroll->dknown && Blind) {
+	if(Blind) {
 	    pline("Being blind, you cannot read the formula on the scroll.");
 	    return(0);
 	}
@@ -53,7 +53,6 @@ doread(void)
 		}
 		pline("Your %s glows green for a moment.",
 			objects[otmp->otyp].oc_name);
-		otmp->cursed = 0;
 		otmp->spe++;
 		break;
 	    }
@@ -126,9 +125,6 @@ doread(void)
 		  pline("You feel like you need some help.");
 		else
 		  pline("You feel like someone is helping you.");
-		for(obj = invent; obj ; obj = obj->nobj)
-			if(obj->owornmask)
-				obj->cursed = confused;
 		if(Punished && !confused) {
 			Punished = 0;
 			freeobj(uchain);
@@ -311,20 +307,6 @@ doread(void)
 		}
 		break;
 	    }
-	case SCR_IDENTIFY:
-		/* known = TRUE; */
-		if(confused)
-			pline("You identify this as an identify scroll.");
-		else
-			pline("This is an identify scroll.");
-		useup(scroll);
-		objects[SCR_IDENTIFY].oc_name_known = 1;
-		if(!confused)
-		    while(
-			!ggetobj("identify", identify, rn2(5) ? 1 : rn2(5))
-			&& invent
-		    );
-		return(1);
 	case SCR_MAGIC_MAPPING:
 	    {	struct rm *lev;
 		int num, zx, zy;
@@ -425,23 +407,7 @@ doread(void)
 		impossible("What weird language is this written in? (%u)",
 			scroll->otyp);
 	}
-	if(!objects[scroll->otyp].oc_name_known) {
-		if(known && !confused) {
-			objects[scroll->otyp].oc_name_known = 1;
-			more_experienced(0,10);
-		} else if(!objects[scroll->otyp].oc_uname)
-			docall(scroll);
-	}
 	useup(scroll);
-	return(1);
-}
-
-int
-identify(struct obj *otmp)	/* also called by newmail() */
-{
-	objects[otmp->otyp].oc_name_known = 1;
-	otmp->known = otmp->dknown = 1;
-	prinv(otmp);
 	return(1);
 }
 

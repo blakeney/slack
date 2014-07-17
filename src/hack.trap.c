@@ -360,12 +360,7 @@ dotele(void)
 		pline("You are not able to teleport at will.");
 		return(0);
 	}
-	if(u.uhunger <= 100 || u.ustr < 6) {
-		pline("You miss the strength for a teleport spell.");
-		return(1);
-	}
 	tele();
-	morehungry(100);
 	return(1);
 }
 

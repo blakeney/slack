@@ -19,6 +19,7 @@ MAN=	hack.6
 DPADD=	${LIBTERMCAP}
 LDADD=	-ltermcap
 CFLAGS+= -I${.CURDIR} -I.
+CFLAGS+= -00 -g
 FILES=	rumors help hh data
 FILESMODE_rumors=	440
 FILESGRP=	${BINGRP}

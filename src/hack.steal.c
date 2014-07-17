@@ -108,18 +108,14 @@ steal(struct monst *mtmp)
 			  setworn(NULL, otmp->owornmask & W_ARMOR);
 			  break;
 			}
-		{ int curssv = otmp->cursed;
-			otmp->cursed = 0;
-			stop_occupation();
+		{ stop_occupation();
 			pline("%s seduces you and %s off your %s.",
 				Amonnam(mtmp, Blind ? "gentle" : "beautiful"),
-				otmp->cursed ? "helps you to take"
-					    : "you start taking",
+					    "you start taking",
 				(otmp == uarmg) ? "gloves" :
 				(otmp == uarmh) ? "helmet" : "armor");
 			named++;
 			armoroff(otmp);
-			otmp->cursed = curssv;
 			if(multi < 0){
 				stealoid = otmp->o_id;
 				stealmid = mtmp->m_id;

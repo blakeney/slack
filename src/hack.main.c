@@ -325,7 +325,6 @@ not_recovered:
 			}
 			if(Teleportation && !rn2(85)) tele();
 			if(Searching && multi >= 0) dosearch();
-			gethungry();
 			invault();
 			amulet();
 		}

@@ -118,13 +118,11 @@ struct you {
 
 	unsigned uswallow:1;		/* set if swallowed by a monster */
 	unsigned uswldtim:4;		/* time you have been swallowed */
-	unsigned uhs:3;			/* hunger state - see hack.eat.c */
 	schar ustr,ustrmax;
 	schar udaminc;
 	schar uac;
 	int uhp,uhpmax;
 	long int ugold,ugold0,uexp,urexp;
-	int uhunger;			/* refd only in eat.c and shk.c */
 	int uinvault;
 	struct monst *ustuck;
 	int nr_killed[CMNUM+2];		/* used for experience bookkeeping */
