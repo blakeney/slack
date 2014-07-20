@@ -8,6 +8,7 @@ Simplified fork of the BSD hack game
 * No cursed items
 * All items automatically identified
 * Items removed related to hunger, curses, and identification
+* No automatic item pickup (automatically look instead)
 
 # Build Instructions
 On FreeBSD with clang, execute the following in the 'src' directory:
