@@ -291,7 +291,15 @@ domove(void)
 	} else {
 		pru();
 	}
-	if(!flags.nopick) pickup(1);
+
+	//if(!flags.nopick) pickup(1); // No autopickup
+	// Auto-look instead
+    struct obj *otmp0 = NULL;
+    struct gold *gold = NULL;
+	otmp0 = o_at(u.ux, u.uy);
+	gold = g_at(u.ux, u.uy);
+	if (otmp0 || gold) dolook();
+
 	if(trap) dotrap(trap);		/* fall into pit, arrow trap, etc. */
 	inshop();
 	if(!Blind) read_engr_at(u.ux,u.uy);
